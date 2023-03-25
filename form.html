@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User Form</title>
+    <style>
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+      }
+      input {
+        margin-bottom: 10px;
+        padding: 5px;
+        width: 300px;
+      }
+      button {
+        margin-top: 20px;
+        padding: 10px;
+        width: 100px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="user-form">
+      <input type="text" id="name" placeholder="Name" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="tel" id="phone" placeholder="Phone" required />
+      <button type="submit">Submit</button>
+    </form>
+
+    <script>
+      const form = document.querySelector("#user-form");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.querySelector("#name").value;
+        const email = document.querySelector("#email").value;
+        const phone = document.querySelector("#phone").value;
+
+        const getUserUrl = `https://test-api-v3.myways.ai/user?email=${email}`;
+        const getUserResponse = await fetch(getUserUrl, { method: "GET" });
+        const userData = await getUserResponse.json();
+
+        if (userData.exists) {
+          alert("User found!");
+        } else {
+          const postUserUrl = "https://test-api-v3.myways.ai/user";
+          const postUserResponse = await fetch(postUserUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name, email, phone }),
+          });
+          const postData = await postUserResponse.json();
+          alert("User created successfully!");
+        }
+      });
+    </script>
+  </body>
+</html>
